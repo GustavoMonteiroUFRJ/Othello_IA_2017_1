@@ -1,7 +1,8 @@
 class OurPlayer:
 	# cada jogador tem geralmente 30 jogadas para fazer
 	# quando faltar 9 jogadas eu digo eque o jogo está acabando
-	ENDIN = 21
+	ENDING = 21
+	BEGINNING = 10
 
   def __init__(self, color):
     self.color = color
@@ -10,14 +11,21 @@ class OurPlayer:
   def play(self, board):
   	rounds_counter += 1
   	move = None
-  	if rounds_counter >= ENDIN 
+  	if rounds_counter >= ENDING 
   		move = getMaxPoint(board.get_clone(),board.valid_moves(self.color))
   	else if thereIsCorner(board.valid_moves(self.color))
   		move = getBetterCorner(board.valid_moves(self.color))
-  	else if 
-    
+  	else 
+  		array_to_ignore = getMaxPoint(board.get_clone(),board.valid_moves(self.color))
+    	if rounds_counter <= BEGINNING
+    		move = getMaxPoint(board.get_clone(),board.valid_moves(self.color))
 
     return move
+
+  def getMaxPoint(): 
+  def getMaxPoint(): 
+  def thereIsCorner(): 
+  def getBetterCorner(): 
 
   def getNearestCorner(self, moves):
     import math

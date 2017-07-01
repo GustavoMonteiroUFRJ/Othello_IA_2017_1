@@ -23,7 +23,7 @@ class level2Player:
     for move in board.valid_moves(self.color):
       if str(move) in self.stringMoveList: continue
       self.stringMoveList+=[str(move)]
-      print(str(move))
+      #print(str(move))
       self.listMoveQuality += [MoveQuality(move,self.color)]
     for move in self.listMoveQuality:
       move.analyze(board)

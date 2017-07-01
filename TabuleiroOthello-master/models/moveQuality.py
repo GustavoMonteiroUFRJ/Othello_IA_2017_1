@@ -6,10 +6,10 @@ class MoveQuality:
   def __init__(self, move, color):
     self.move = move
     self.color = color
-    self.score_gain = 0
+    self.score_gain = 0 # valor inteiro a partir de 1 
     self.is_corne = False
-    self.can_lose_corne = 0
-    self.power_to_gain_corne = 0
+    self.can_lose_corne = 0 # valor inteiro de 0 ate 4
+    self.power_to_gain_corne = 0 # valor real entre 0 e 1 
     self.is_in_small_square = False
     self.is_on_edgs = False
 
@@ -39,12 +39,15 @@ class MoveQuality:
       if Move(corner[0],corner[1]) in opponente_moves:
         self.can_lose_corne += 1
 
+    # o calculo de power_to_gain_corne eh: a proporcao de quantas jogadas  
+    # do oponente na proxima rodada me permite ganhar uma quina
     for opponent_move in opponente_moves:
       temp_borad = board.get_clone()
       temp_borad.play(opponent_move,borad._opponent(self.color))
       for corner in corners:
       if Move(corner[0],corner[1]) in temp_borad.valid_moves(self.color):
         self.power_to_gain_corne += 1
+      self.power_to_gain_corne /= len(opponente_moves)
     
   # seta a quantidade de ponto ganho ao jogar
   def getPointGain(self,board):

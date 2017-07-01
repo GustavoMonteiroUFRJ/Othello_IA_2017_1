@@ -42,60 +42,26 @@ class level2Player:
       return self.random.choice(self.possible_moves)
 
   # Retonra o movimento que mais faz crescer os pontos
-  def getMaxPoint(self,board,moves):
+  def getMaxPoint(self):
     MAXscore = 0
-    idx = 0
     retMove = []
-
-    if self.color is board.BLACK:
-      idx = 1
-
-    for move in moves:
-      if move in self.moves_to_ignore:
-        continue
-      temp_borad = board.get_clone()
-      temp_borad.play(move,self.color)
-      score = temp_borad.score()[idx]
-
-      if score > MAXscore:
+    for move in self.listMoveQuality:
+      if move.score_gain > MAXscore:
+        MAXscore = move.score_gain
         retMove = [move]
-      elif scor == MAXscore:
+      elif move.score_gain == MAXscore:
         retMove += [move]
 
     self.possible_moves += retMove
   
   # Retonra o movimento que menis faz crescer os pontos
-  def getMinPoint(self,board,moves):
+  def getMinPoint(self):
     MINscore = 65
-    idx = 0
     retMove = []
-    
-    if self.color is board.BLACK:
-      idx = 1
-    
-    for move in moves:
-      if move in self.moves_to_ignore:
-        continue
-      temp_borad = board.get_clone()
-      temp_borad.play(move,self.color)
-      score = temp_borad.score()[idx]
-
-      if score < MINscore:
+    for move in self.listMoveQuality:
+      if move.score_gain < MINscore:
         retMove = [move]
-      elif score == MINscore:
+      elif score.score_gain == MINscore:
         retMove += [move]
 
     self.possible_moves += retMove
-  
-  # retorna a lista de jogadas que fazem o oponente pegar quinas
-  def getPointToIgnore(self,board,moves):
-    corners = [[1,1],[1,8], [8,1], [8,8]]
-    
-    for move in moves:
-      temp_borad = board.get_clone()
-      temp_borad.play(move,self.color)
-      oponente_moves = temp_borad.valid_moves(board._opponent(self.color))
-
-      for corner in corners:
-        if Move(corner[0],corner[1]) in oponente_moves:
-          self.moves_to_ignore += [move]

@@ -77,48 +77,44 @@ class MoveQuality:
     i=0
     
     while (len(temp_board.valid_moves(self.color))+len(temp_board.valid_moves(other_color)))!=0:
-      #for i in range(5):
+      #print(len(temp_board.valid_moves(self.color))+len(temp_board.valid_moves(other_color)))
+     #for i in range(5):
       #print(i),
       #print(self.score_gain)
       #print("current:",str(current_move))
       prev_board=temp_board.get_clone()
-      
-      if i%2==0:
-        #print("aye")
+      if i==0:
         temp_board.play(current_move,self.color)
         self.score_gain += temp_board.score()[idx] - prev_board.score()[idx]
-        #print(temp_board.valid_moves(other_color))
-        for xmove in temp_board.valid_moves(other_color):
-          #print(str(xmove))
-          
-          temp_score=self.getPointGain(move=xmove,color=other_color,board=temp_board)
-          #print(temp_score)
-          if temp_score>=scoreGain:
-            if temp_score==scoreGain:
-              if self.random.getrandbits(1):
-                scoreGain=temp_score
-                current_move=xmove
-            else:    
-              scoreGain=temp_score
-              current_move=xmove
-        scoreGain=0  
+       
       
+      elif i%2==0:
+        #print("aye")
+        self.getPointToIgnore(self.color,temp_board.get_clone(),temp_board.valid_moves(self.color))
+        if i<=42:
+          current_move = self.getMinPoint(self.color,temp_board,temp_board.valid_moves(self.color))
+        else:
+          current_move = self.getMaxPoint(self.color,temp_board,temp_board.valid_moves(self.color))
+        if current_move==None:
+          i+=1
+          continue
+        else:
+          temp_board.play(current_move,self.color)
+          self.score_gain += temp_board.score()[idx] - prev_board.score()[idx]
+        
       else:
         #print("nay")
-        temp_board.play(current_move,other_color)
-        self.score_gain+= -1*(temp_board.score()[other_idx] - prev_board.score()[other_idx])
-        for xmove in temp_board.valid_moves(self.color):
-          #print(str(xmove))
-          temp_score=self.getPointGain(move=xmove,color=self.color,board=temp_board)
-          if temp_score>=scoreGain:
-            if temp_score==scoreGain:
-              if self.random.getrandbits(1):
-                scoreGain=temp_score
-                current_move=xmove
-            else:    
-              scoreGain=temp_score
-              current_move=xmove
-        scoreGain=0
+        self.getPointToIgnore(other_color,temp_board.get_clone(),temp_board.valid_moves(other_color))
+        if i<=42:
+          current_move = self.getMinPoint(other_color,temp_board,temp_board.valid_moves(other_color))
+        else:
+          current_move = self.getMaxPoint(other_color,temp_board,temp_board.valid_moves(other_color)) 
+        if current_move==None:
+          i+=1
+          continue
+        else:
+          temp_board.play(current_move,other_color)
+          self.score_gain+= -1*(temp_board.score()[other_idx] - prev_board.score()[other_idx])
       i+=1
 
   # checa se e uma quina
@@ -128,3 +124,71 @@ class MoveQuality:
       if Move(corner[0],corner[1]) == self.move:
         self.is_corne = True
         return
+# Retonra o movimento que mais faz crescer os pontos
+  def getMaxPoint(self,color,board,moves):
+    MAXscore = 0
+    idx = 0
+    retMove = []
+
+    if color is board.BLACK:
+      idx = 1
+
+    for move in moves:
+      if move in self.moves_to_ignore:
+        continue
+      temp_borad = board.get_clone()
+      temp_borad.play(move,color)
+      score = temp_borad.score()[idx]
+
+      if score > MAXscore:
+        retMove = [move]
+      elif scor == MAXscore:
+        retMove += [move]
+
+    if len(retMove)!=0:
+      return self.random.choice(retMove)
+    elif len(self.moves_to_ignore)!=0 :
+      return self.random.choice(self.moves_to_ignore)
+    else:
+      return None
+  # Retonra o movimento que menis faz crescer os pontos
+  def getMinPoint(self,color,board,moves):
+    MINscore = 65
+    idx = 0
+    retMove = []
+    
+    if color is board.BLACK:
+      idx = 1
+    
+    for move in moves:
+      if move in self.moves_to_ignore:
+        continue
+      temp_borad = board.get_clone()
+      temp_borad.play(move,color)
+      score = temp_borad.score()[idx]
+
+      if score < MINscore:
+        retMove = [move]
+      elif score == MINscore:
+        retMove += [move]
+    
+    if len(retMove)!=0:
+      return self.random.choice(retMove)
+    elif len(self.moves_to_ignore)!=0 :
+      return self.random.choice(self.moves_to_ignore)
+    else:
+      return None
+
+  def getPointToIgnore(self,color,board,moves):
+    self.moves_to_ignore=[]
+    corners = [[1,1],[1,8], [8,1], [8,8]]
+    
+    for move in moves:
+      temp_borad = board.get_clone()
+      temp_borad.play(move,color)
+      oponente_moves = temp_borad.valid_moves(board._opponent(self.color))
+
+      for corner in corners:
+        if Move(corner[0],corner[1]) in oponente_moves:
+          self.moves_to_ignore += [move]
+  

@@ -20,6 +20,21 @@ class level2Player:
     self.maxScoreGain=0
     self.listMoveQuality = []
     self.stringMoveList= []
+    
+        
+
+    self.possible_moves = []
+    self.maximized_moves = []
+    self.moves_to_ignore = []
+    self.border_moves = []
+    self.corner_moves = []
+    
+    
+    
+    self.getCorner(board.valid_moves(self.color))
+    self.getBorder(board.valid_moves(self.color))
+    self.getPointToIgnore(board.get_clone(),board.valid_moves(self.color))
+    
     for move in board.valid_moves(self.color):
       if str(move) in self.stringMoveList: continue
       self.stringMoveList+=[str(move)]
@@ -27,28 +42,55 @@ class level2Player:
       self.listMoveQuality += [MoveQuality(move,self.color)]
     for move in self.listMoveQuality:
       move.analyze(board)
-      print("projected score of move"),
-      print(str(move.move)),
-      print("is: "),
-      print(move.score_gain)
-      if move.score_gain>self.maxScoreGain:
-        self.maxScoreGain=move.score_gain
-        
-
-    self.possible_moves = []
-    self.maximized_moves = []
-    self.moves_to_ignore = []
-    self.getPointToIgnore(board.get_clone(),board.valid_moves(self.color))
+      if move.move not in self.moves_to_ignore: 
+        print("projected score of move"),
+        print(str(move.move)),
+        print("is: "),
+        print(move.score_gain)
+        if move.score_gain>self.maxScoreGain:
+          self.maxScoreGain=move.score_gain
     
     for move in self.listMoveQuality:
       if move.score_gain is self.maxScoreGain:
         self.maximized_moves+=[move.move]
 
-    
-    #print("******")
-    #print(len(self.possible_moves))
+    for move in self.moves_to_ignore:
+      if move in self.maximized_moves:
+        self.maximized_moves.remove(move)
+      if move in self.corner_moves:
+        print("VAI DAR MUITA MERDA")
+        self.corner_moves.remove(move)
+      if move in self.border_moves:
+        print("VAI DAR POUCA MERDA")
+        self.border_moves.remove(move)
 
-    if len(self.maximized_moves) > 0:
+    if len(self.corner_moves) > 0:
+      maxprojectedGain=float("-inf")
+      if len(self.corner_moves)>1:
+        for move in self.listMoveQuality:
+          if move.move in self.corner_moves:
+            if move.score_gain>maxprojectedGain:
+              retMove=move.move
+              maxprojectedGain=move.score_gain
+        return retMove
+      else:
+        return self.random.choice(self.corner_moves)
+    
+    elif len(self.border_moves) > 0:
+      maxprojectedGain=float("-inf")
+      if len(self.border_moves)>1:
+        for move in self.listMoveQuality:
+          if move.move in self.border_moves:
+            if move.score_gain>maxprojectedGain:
+              retMove=move.move
+              maxprojectedGain=move.score_gain
+        return retMove
+      else:
+        return self.random.choice(self.border_moves)
+    
+    
+
+    elif len(self.maximized_moves) > 0:
       return self.random.choice(self.maximized_moves)
     
     elif self.rounds_counter >= self.ENDING:
@@ -114,7 +156,19 @@ class level2Player:
 
     self.possible_moves += retMove
   
-  # retorna a lista de jogadas que fazem o oponente pegar quinas
+  def getCorner(self,moves):
+    corners = [[1,1],[1,8], [8,1], [8,8]]
+    
+    for corner in corners:
+      if Move(corner[0],corner[1]) in moves:
+        self.corner_moves += [Move(corner[0],corner[1])]
+
+
+  def getBorder(self, moves):
+    for move in moves:
+      if move.x==1 or move.y==1 or move.x==8 or move.y==8:
+        self.border_moves+=[move]
+
   def getPointToIgnore(self,board,moves):
     corners = [[1,1],[1,8], [8,1], [8,8]]
     
@@ -123,6 +177,8 @@ class level2Player:
       temp_borad.play(move,self.color)
       oponente_moves = temp_borad.valid_moves(board._opponent(self.color))
 
-      for corner in corners:
-        if Move(corner[0],corner[1]) in oponente_moves:
-          self.moves_to_ignore += [move]
+      for m in oponente_moves:
+        if m.x==1 or m.y==1 or m.x==8 or m.y==8:
+          if move not in self.moves_to_ignore: 
+            print("ignore:", str(move))
+            self.moves_to_ignore += [move]

@@ -19,13 +19,17 @@ class OurPlayer:
     
     if self.rounds_counter >= self.ENDING:
       move = self.getMaxPoint(board.get_clone(),board.valid_moves(self.color))
+      print 'Rodou o Max Point'
     elif self.thereIsCorner(board.valid_moves(self.color)):
       move = self.getBetterCorner(board.valid_moves(self.color))
+      print 'Rodou o Better Corner'
     else:
       move = self.getMinPoint(board.get_clone(),board.valid_moves(self.color))
+      print 'Rodou o Min Point'
     if move is None:
       import random
       self.random.choice(board.valid_moves(self.color))
+      print 'Rodou o random'
     return move
 
   # Retonra o movimento que mais faz crescer os pontos
@@ -74,19 +78,17 @@ class OurPlayer:
   # Ve se existe uma quina para ser jogada
   def thereIsCorner(self,moves):
     corners = [[1,1],[1,8], [8,1], [8,8]]
-    for move in moves:
-      for corner in corners:
-        if Move(corner[0],corner[1]) in moves:
-          return True
+    for corner in corners:
+      if Move(corner[0],corner[1]) in moves:
+        return True
     return False
   
   # Pega o movimento da malhor quinta caso exista mais que uma (nao sei se pode existir mais de 1)
   def getBetterCorner(self,moves):
     corners = [[1,1],[1,8], [8,1], [8,8]]
-    for move in moves:
-      for corner in corners:
-        if Move(corner[0],corner[1]) in moves:
-          return move
+    for corner in corners:
+      if Move(corner[0],corner[1]) in moves:
+        return Move(corner[0],corner[1])
     return None
 
 

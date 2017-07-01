@@ -10,23 +10,46 @@ class level2Player:
   def __init__(self, color):
     self.color = color
     self.rounds_counter = 0
+    self.maxScoreGain = 0
 
   def play(self, board):
 
+
     self.rounds_counter += 1
 
+    self.maxScoreGain=0
     self.listMoveQuality = []
+    self.stringMoveList= []
     for move in board.valid_moves(self.color):
+      if str(move) in self.stringMoveList: continue
+      self.stringMoveList+=[str(move)]
+      print(str(move))
       self.listMoveQuality += [MoveQuality(move,self.color)]
     for move in self.listMoveQuality:
       move.analyze(board)
+      print("projected score of move"),
+      print(str(move.move)),
+      print("is: "),
+      print(move.score_gain)
+      if move.score_gain>self.maxScoreGain:
+        self.maxScoreGain=move.score_gain
+        
 
     self.possible_moves = []
+    self.maximized_moves = []
     self.moves_to_ignore = []
     self.getPointToIgnore(board.get_clone(),board.valid_moves(self.color))
     
-    if len(self.possible_moves) > 0:
-      return self.random.choice(self.possible_moves)
+    for move in self.listMoveQuality:
+      if move.score_gain is self.maxScoreGain:
+        self.maximized_moves+=[move.move]
+
+    
+    #print("******")
+    #print(len(self.possible_moves))
+
+    if len(self.maximized_moves) > 0:
+      return self.random.choice(self.maximized_moves)
     
     elif self.rounds_counter >= self.ENDING:
       self.getMaxPoint(board.get_clone(),board.valid_moves(self.color))
@@ -34,7 +57,11 @@ class level2Player:
     else:
       self.getMinPoint(board.get_clone(),board.valid_moves(self.color))
 
+    print(len(self.possible_moves))
+    
     if len(self.possible_moves) == 0:
+      #print("BANANAER")
+      #print(board.valid_moves(self.color))
       return self.random.choice(board.valid_moves(self.color))
 
     else:

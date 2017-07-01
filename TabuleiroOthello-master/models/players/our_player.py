@@ -1,6 +1,7 @@
 from models.move import Move
 
 class OurPlayer:
+  import random
   # cada jogador tem geralmente 30 jogadas para fazer
   # quando faltar 9 jogadas eu digo eque o jogo esta acabando
   ENDING = 21
@@ -16,20 +17,26 @@ class OurPlayer:
     move = None
     
     self.array_to_ignore = self.getPointToIgnore(board.get_clone(),board.valid_moves(self.color))
-    
+    print 'array : '
+    for a in self.array_to_ignore:
+      print 'x = ' + str(a.x) + ', y = ' + str(a.y)
+
     if self.rounds_counter >= self.ENDING:
       move = self.getMaxPoint(board.get_clone(),board.valid_moves(self.color))
       print 'Rodou o Max Point'
+
     elif self.thereIsCorner(board.valid_moves(self.color)):
       move = self.getBetterCorner(board.valid_moves(self.color))
       print 'Rodou o Better Corner'
+
     else:
       move = self.getMinPoint(board.get_clone(),board.valid_moves(self.color))
       print 'Rodou o Min Point'
+
     if move is None:
-      import random
-      self.random.choice(board.valid_moves(self.color))
+      move = self.random.choice(board.valid_moves(self.color))
       print 'Rodou o random'
+
     return move
 
   # Retonra o movimento que mais faz crescer os pontos
@@ -40,6 +47,9 @@ class OurPlayer:
       idx = 1
     retMove = None
     for move in moves:
+      if move in self.array_to_ignore:
+        print 'entrei no array ignore'
+        continue
       temp_borad = board.get_clone()
       temp_borad.play(move,self.color)
       score = temp_borad.score()[idx]
@@ -55,6 +65,9 @@ class OurPlayer:
       idx = 1
     retMove = None
     for move in moves:
+      if move in self.array_to_ignore:
+        print 'entrei no array ignore'
+        continue
       temp_borad = board.get_clone()
       temp_borad.play(move,self.color)
       score = temp_borad.score()[idx]
@@ -90,6 +103,10 @@ class OurPlayer:
       if Move(corner[0],corner[1]) in moves:
         return Move(corner[0],corner[1])
     return None
+
+
+
+
 
 
   # essa funcao esta aqui so como exemplo #

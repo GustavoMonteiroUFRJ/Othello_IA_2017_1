@@ -39,7 +39,6 @@ class level2Player:
       return self.possible_moves[0].move
     
     
-    
     elif self.rounds_counter >= self.ENDING:
       for move in self.listMoveQuality:
         if move.can_lose_corne == 0:
@@ -66,3 +65,38 @@ class level2Player:
     if m1.can_lose_corne == m2.can_lose_corne:
       return m2.score_gain - m1.score_gain
     return m1.can_lose_corne - m2.can_lose_corne
+
+  ## funcao abre a arvore ate o fim usando euristica de maxmizar os pontos
+  def maximize_score(self, board, amIMax = True):
+    
+    # Caso de borda! No folha! Quando o jogo acaba
+    if (len(board.valid_moves(self.color))+len(board.valid_moves(board._opponent(self.color))))==0:
+      idx = 0
+      if self.color is board.BLACK:
+        idx = 1
+      return (Move(0,0),board.score()[idx])
+
+
+    array = []
+    color = self.color
+    if not(amIMax):
+      color = board._opponent(self.color)
+    
+
+    # tratao caso em que alguem nao tem onde jogar
+    if len(board.valid_moves(color)) == 0:
+      return (Move(0,0),maximize_score(board, not(amIMax)))
+    
+    for move in board.valid_moves(color):
+      
+      temp_board = board.get_clone()
+      temp_board.play(move,color)
+
+      array += [(move,maximize_score(temp_board.get_clone(), not(amIMax))[1] ) ]
+    
+    if amIMax:
+      array.sort(key=itemgetter(1), reverse=True) #Decrescente
+    else:
+      array.sort(key=itemgetter(1)) #Crescente
+
+    return array[0]

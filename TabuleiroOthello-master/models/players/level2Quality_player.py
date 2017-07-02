@@ -22,11 +22,10 @@ class level2Player:
     for move in board.valid_moves(self.color):
       self.listMoveQuality += [MoveQuality(move,self.color)]
     # Aplicando a analize
-    print 'vou analizou ...' #DEBUG
     for move in self.listMoveQuality:
       move.analyze(board)
+      print move #DEBUG
 
-    print 'Analizou' #DEBUG
 
     # procurando por quinas e caso exista jogar na que mais gera ponto (NAO TESTADO)
     self.possible_moves = []

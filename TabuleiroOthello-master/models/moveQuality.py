@@ -14,14 +14,13 @@ class MoveQuality:
     self.is_on_edgs = False
 
   def analyze(self, board):
-
     self.getCorner()
-    self.getPointGain(board)
-    self.getMoveCornerLoser(board)
+    self.getPointGain(board.get_clone())
+    self.getMoveCornerLoser(board.get_clone())
     self.getLocation()
 
   # seta vaiaveis de localisacao do movimento
-  def getLocation(self): 
+  def getLocation(self):
     if 2 < self.move.x < 7 and 2 < self.move.y < 7:
       self.is_in_small_square = True
     elif self.move.x == 1 or self.move.x == 8: 
@@ -55,9 +54,9 @@ class MoveQuality:
     if self.color is board.BLACK:
       idx = 1
 
-    temp_board = board.get_clone()
-    temp_board.play(self.move,self.color)
-    self.score_gain = temp_board.score()[idx] - board.score()[idx]
+    old_score = board.score()[idx]
+    board.play(self.move,self.color)
+    self.score_gain = board.score()[idx] - old_score
   
   # checa se eh uma quina
   def getCorner(self):

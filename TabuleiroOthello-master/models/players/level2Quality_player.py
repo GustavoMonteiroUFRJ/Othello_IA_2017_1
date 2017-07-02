@@ -1,5 +1,7 @@
 from models.move import Move
 from models.moveQuality import MoveQuality
+from operator import attrgetter
+
 
 class level2Player:
   import random
@@ -16,52 +18,52 @@ class level2Player:
     self.rounds_counter += 1
 
     self.listMoveQuality = []
+    # Transformando a os Move em MoveQuality
     for move in board.valid_moves(self.color):
       self.listMoveQuality += [MoveQuality(move,self.color)]
+    # Aplicando a analize
+    print 'vou analizou ...' #DEBUG
     for move in self.listMoveQuality:
       move.analyze(board)
 
+    print 'Analizou' #DEBUG
+
+    # procurando por quinas e caso exista jogar na que mais gera ponto (NAO TESTADO)
     self.possible_moves = []
-    self.moves_to_ignore = []
-    self.getPointToIgnore(board.get_clone(),board.valid_moves(self.color))
-    
+    for move in self.listMoveQuality:
+      if move.is_corne:
+        self.possible_moves += [move]
     if len(self.possible_moves) > 0:
-      return self.random.choice(self.possible_moves)
+      print 'Achou uma quina...' #DEBUG
+      sorted(self.possible_moves, key=attrgetter('score_gain'))
+      print 'joguei na quina' #DEBUG
+      return self.possible_moves[0].move
+    
+    
     
     elif self.rounds_counter >= self.ENDING:
-      self.getMaxPoint(board.get_clone(),board.valid_moves(self.color))
+      for move in self.listMoveQuality:
+        if move.can_lose_corne == 0:
+          self.possible_moves += move
+      sorted(self.possible_moves, key=attrgetter('score_gain'))
 
     else:
-      self.getMinPoint(board.get_clone(),board.valid_moves(self.color))
+      for move in self.listMoveQuality:
+        if move.can_lose_corne == 0:
+          self.possible_moves += [move]
+      sorted(self.possible_moves, key=attrgetter('score_gain'), reverse=True)
 
-    if len(self.possible_moves) == 0:
-      return self.random.choice(board.valid_moves(self.color))
+
+    if len(self.possible_moves) == 0: # caso em que so tem lugares que se perde quina 
+      sorted(self.listMoveQuality , cmp=comper_movos_who_lose_corne) # ordena por pontos
+      return self.listMoveQuality[0].move # escolha a que da mais pontos
 
     else:
-      print str(len(self.possible_moves))
-      return self.random.choice(self.possible_moves)
+      return self.possible_moves[0].move
 
-  # Retonra o movimento que mais faz crescer os pontos
-  def getMaxPoint(self):
-    MAXscore = 0
-    retMove = []
-    for move in self.listMoveQuality:
-      if move.score_gain > MAXscore:
-        MAXscore = move.score_gain
-        retMove = [move]
-      elif move.score_gain == MAXscore:
-        retMove += [move]
-
-    self.possible_moves += retMove
   
-  # Retonra o movimento que menis faz crescer os pontos
-  def getMinPoint(self):
-    MINscore = 65
-    retMove = []
-    for move in self.listMoveQuality:
-      if move.score_gain < MINscore:
-        retMove = [move]
-      elif score.score_gain == MINscore:
-        retMove += [move]
-
-    self.possible_moves += retMove
+  ## funcao que ordena crescenta para o can_lose_corne e decrescente para score_gain 
+  def comper_movos_who_lose_corne(m1,m2):
+    if m1.can_lose_corne == m2.can_lose_corne:
+      return m2.score_gain - m1.score_gain
+    return m1.can_lose_corne - m2.can_lose_corne

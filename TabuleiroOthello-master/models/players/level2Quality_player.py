@@ -1,6 +1,6 @@
 from models.move import Move
 from models.moveQuality import MoveQuality
-from operator import attrgetter
+from operator import itemgetter, attrgetter
 
 
 class level2Player:

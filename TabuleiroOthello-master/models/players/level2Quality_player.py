@@ -5,7 +5,10 @@ class Level2QualityPlayer:
   
   # cada jogador tem geralmente 30 jogadas para fazer
   # quando faltar 9 jogadas eu digo eque o jogo esta acabando
-
+  MIDDLE=14
+  ENDING=24
+  ULTRAENDING=28
+  
   def __init__(self, color):
     self.color = color
     self.rounds_counter = 0
@@ -14,8 +17,12 @@ class Level2QualityPlayer:
 
     self.rounds_counter += 1
 
-    if self.rounds_counter >= self.ENDING:
-      return self.maximize_score(board.get_clone(), root=True)[0]
+    if self.rounds_counter >= self.MIDDLE:
+      return self.maximize_score(board.get_clone(), root=True,depth=3)[0]
+    elif self.rounds_counter >= self.ENDING:
+      return self.maximize_score(board.get_clone(), root=True,depth=4)[0]
+    elif self.rounds_counter >= self.ULTRAENDING:
+      return self.maximize_score(board.get_clone(), root=True,depth=11)[0]
 
 
 
@@ -63,16 +70,16 @@ class Level2QualityPlayer:
     return m1.can_lose_corne - m2.can_lose_corne
 
   ## funcao abre a arvore ate o fim usando euristica de maxmizar os pontos
-  def maximize_score(self, board, amIMax = True, root = False, deepness = 4):
+  def maximize_score(self, board, amIMax = True, root = False, depth = 4):
     if root:
       print 'Analizando o tabuleiro'
-      print board
+      #print board
       for move in RemoveRepeatedMoves(board.valid_moves(self.color)):
         print move
-        self.folha = 0
+      self.folha = 0
     
     # Caso de borda! No folha! Quando o jogo acaba
-    if deepness == 0 or (len(board.valid_moves(self.color))+len(board.valid_moves(board._opponent(self.color))))==0:
+    if depth == 0 or (len(board.valid_moves(self.color))+len(board.valid_moves(board._opponent(self.color))))==0:
       idx = 0
       if self.color is board.BLACK:
         idx = 1
@@ -87,7 +94,7 @@ class Level2QualityPlayer:
 
     # tratao caso em que alguem nao tem onde jogar
     if len(board.valid_moves(color)) == 0:
-      return self.maximize_score(board, not(amIMax), deepness = deepness-1)
+      return self.maximize_score(board, not(amIMax), depth = depth-1)
 
     retMove = None
     MAX = 0
@@ -97,7 +104,7 @@ class Level2QualityPlayer:
       temp_board = board.get_clone()
       temp_board.play(move,color)
 
-      moveScore = self.maximize_score(temp_board.get_clone(), not(amIMax), deepness = deepness-1)[1]
+      moveScore = self.maximize_score(temp_board.get_clone(), not(amIMax), depth = depth-1)[1]
       if amIMax:
         if moveScore > MAX:
           MAX = moveScore
@@ -110,12 +117,16 @@ class Level2QualityPlayer:
       if root:
         print 'Analizando jogada (' + str(move) + ') score = ' + str(moveScore)
         print 'Folha = ' + str(self.folha) 
-        print temp_board
+        #print temp_board
         self.folha = 0
 
     if amIMax:
+      print("MAX"),
+      print(MAX),
       return (retMove,MAX)
     else:
+      print("MIN"),
+      print(MIN),
       return (retMove,MIN)
 
   from operator import itemgetter, attrgetter

@@ -2,7 +2,7 @@ from models.move import Move
 
 class Level2QualityPlayer:
   
-  #Definições de meio e fim do jogo
+  #Definicoes de meio e fim do jogo
   MIDDLE=15
   ENDING=19
   ULTRAENDING=28
@@ -16,7 +16,7 @@ class Level2QualityPlayer:
 
     self.rounds_counter += 1
 
-    #do meio até o final do jogo, faz jogadas baseadas em depth search
+    #do meio ate o final do jogo, faz jogadas baseadas em depth search
     if self.rounds_counter >= self.MIDDLE:
       return self.maximize_score(board.get_clone(), root=True,depth=3)[0]
     elif self.rounds_counter >= self.ENDING:

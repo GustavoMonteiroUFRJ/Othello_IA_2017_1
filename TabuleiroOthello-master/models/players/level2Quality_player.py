@@ -4,16 +4,12 @@ from models.move import Move
 class Level2QualityPlayer:
   
   # cada jogador tem geralmente 30 jogadas para fazer
-<<<<<<< HEAD
   # quando faltar 9 jogadas eu digo eque o jogo esta acabando
-  MIDDLE=14
-  ENDING=24
-  ULTRAENDING=28
+  MIDDLE=15
+  ENDING=25
+  ULTRAENDING=29
   
-=======
-  # quando faltar 30 - ENDING jogadas entende-se que o jogo esta acabando
-  ENDING = 21
->>>>>>> d9045ad423d528ad40275e190ad44318a2982cb3
+
   def __init__(self, color):
     self.color = color
     self.rounds_counter = 0
@@ -71,13 +67,9 @@ class Level2QualityPlayer:
       return m2.score_gain - m1.score_gain
     return m1.can_lose_corne - m2.can_lose_corne
 
-<<<<<<< HEAD
   ## funcao abre a arvore ate o fim usando euristica de maxmizar os pontos
   def maximize_score(self, board, amIMax = True, root = False, depth = 4):
-=======
-  ## funcao abre a arvore ate o fim usando heuristica de maxmizar os pontos
-  def maximize_score(self, board, amIMax = True, root = False, deepness = 4):
->>>>>>> d9045ad423d528ad40275e190ad44318a2982cb3
+
     if root:
       print 'Analizando o tabuleiro'
       #print board
@@ -85,13 +77,8 @@ class Level2QualityPlayer:
         print move
       self.folha = 0
     
-<<<<<<< HEAD
     # Caso de borda! No folha! Quando o jogo acaba
     if depth == 0 or (len(board.valid_moves(self.color))+len(board.valid_moves(board._opponent(self.color))))==0:
-=======
-    # Caso de borda em nó folha, quando o jogo acaba
-    if deepness == 0 or (len(board.valid_moves(self.color))+len(board.valid_moves(board._opponent(self.color))))==0:
->>>>>>> d9045ad423d528ad40275e190ad44318a2982cb3
       idx = 0
       if self.color is board.BLACK:
         idx = 1
@@ -126,19 +113,13 @@ class Level2QualityPlayer:
           MIN = moveScore
           retMove = move
 
-      if root:
-        print 'Analizando jogada (' + str(move) + ') score = ' + str(moveScore)
-        print 'Folha = ' + str(self.folha) 
+      if root: 
         #print temp_board
         self.folha = 0
 
     if amIMax:
-      print("MAX"),
-      print(MAX),
       return (retMove,MAX)
     else:
-      print("MIN"),
-      print(MIN),
       return (retMove,MIN)
 
   from operator import itemgetter, attrgetter
@@ -192,7 +173,7 @@ class MoveQuality:
       if Move(corner[0],corner[1]) in opponente_moves:
         self.can_lose_corne += 1
 
-    # o calculo de power_to_gain_corne é: a proporcao de quantas jogadas  
+    # o calculo de power_to_gain_corne e: a proporcao de quantas jogadas  
     # do oponente na proxima rodada me permite ganhar uma quina
     for opponent_move in opponente_moves:
       temp_board = board.get_clone()

@@ -66,7 +66,7 @@ class Level2QualityPlayer:
     return m1.can_lose_corner - m2.can_lose_corner
 
   ## funcao abre a arvore ate o fim usando euristica de maxmizar os pontos
-  def maximize_score(self, board, amIMax = True, root = False, depth = 4):
+  def maximize_score(self, board, amIMax = True, root = False, depth = 4, alfaBeta = None):
 
     if root:
 
@@ -104,6 +104,11 @@ class Level2QualityPlayer:
       temp_board.play(move,color)
 
       moveScore = self.maximize_score(temp_board.get_clone(), not(amIMax), depth = depth-1)[1]
+      if(alfaBeta is not None):
+        if amIMax and moveScore < alfaBeta:
+          return (None,MIN)
+        elif not(amIMax) and moveScore > alfaBeta:
+          return (None,MAX)
       if amIMax:
         if moveScore > MAX:
           MAX = moveScore

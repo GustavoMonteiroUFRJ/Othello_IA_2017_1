@@ -95,7 +95,7 @@ class level2Player:
         if Move(corner[0],corner[1]) in oponente_moves:
           self.moves_to_ignore += [move]
   
-  # Pega o movimento da malhor quinta caso exista mais que uma (nao sei se pode existir mais de 1)
+  # Pega o movimento da melhor quina caso exista mais que uma 
   def getCorner(self,moves):
     corners = [[1,1],[1,8], [8,1], [8,8]]
     

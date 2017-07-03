@@ -68,7 +68,7 @@ class Level2QualityPlayer:
         print move
         self.folha = 0
     
-    # Caso de borda! No folha! Quando o jogo acaba
+    # Caso de borda em nó folha, quando o jogo acaba
     if deepness == 0 or (len(board.valid_moves(self.color))+len(board.valid_moves(board._opponent(self.color))))==0:
       idx = 0
       if self.color is board.BLACK:
@@ -82,7 +82,7 @@ class Level2QualityPlayer:
       color = board._opponent(self.color)
     
 
-    # tratao caso em que alguem nao tem onde jogar
+    # tratam caso em que alguem nao tem onde jogar
     if len(board.valid_moves(color)) == 0:
       return self.maximize_score(board, not(amIMax), deepness = deepness-1)
 
@@ -155,7 +155,7 @@ class MoveQuality:
       if self.move.y == 1 or self.move.y == 8:
         is_on_edgs = True
 
-  # seta vairavis relacionadas a quina
+  # seta variaveis relacionadas a quina
   def getMoveCornerLoser(self,board):
     corners = [[1,1],[1,8], [8,1], [8,8]]
 
@@ -166,7 +166,7 @@ class MoveQuality:
       if Move(corner[0],corner[1]) in opponente_moves:
         self.can_lose_corne += 1
 
-    # o calculo de power_to_gain_corne eh: a proporcao de quantas jogadas  
+    # o calculo de power_to_gain_corne é: a proporcao de quantas jogadas  
     # do oponente na proxima rodada me permite ganhar uma quina
     for opponent_move in opponente_moves:
       temp_board = board.get_clone()

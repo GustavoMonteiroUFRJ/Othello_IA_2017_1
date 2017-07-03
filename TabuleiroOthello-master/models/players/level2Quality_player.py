@@ -6,8 +6,8 @@ class Level2QualityPlayer:
   # cada jogador tem geralmente 30 jogadas para fazer
   # quando faltar 9 jogadas eu digo eque o jogo esta acabando
   MIDDLE=15
-  ENDING=25
-  ULTRAENDING=29
+  ENDING=19
+  ULTRAENDING=28
   
 
   def __init__(self, color):
@@ -71,10 +71,10 @@ class Level2QualityPlayer:
   def maximize_score(self, board, amIMax = True, root = False, depth = 4):
 
     if root:
-      print 'Analizando o tabuleiro'
-      #print board
-      for move in RemoveRepeatedMoves(board.valid_moves(self.color)):
-        print move
+      # print 'Analizando o tabuleiro'
+      # print board
+      # for move in RemoveRepeatedMoves(board.valid_moves(self.color)):
+      # print move
       self.folha = 0
     
     # Caso de borda! No folha! Quando o jogo acaba

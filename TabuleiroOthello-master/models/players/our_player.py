@@ -49,7 +49,7 @@ class OurPlayer:
         retMove = move
     return retMove
   
-  # Retonra o movimento que menis faz crescer os pontos
+  # Retorna o movimento que menos faz crescer os pontos
   def getMinPoint(self,board,moves):
     MINscore = 65
     idx = 0
@@ -68,7 +68,7 @@ class OurPlayer:
   
   # retorna a lista de jogadas que fazem o oponente pegar quinas
   def getPointToIgnore(self,board,moves):
-    corners = [[1,1],[1,8], [8,1], [8,8]]
+    corners = [[1,1], [1,8], [8,1], [8,8]]
     retArray = []
     for move in moves:
       temp_borad = board.get_clone()

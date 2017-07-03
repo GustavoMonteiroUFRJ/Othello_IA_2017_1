@@ -3,7 +3,7 @@ from models.move import Move
 class level2Player:
   import random
   # cada jogador tem geralmente 30 jogadas para fazer
-  # quando faltar 9 jogadas eu digo eque o jogo esta acabando
+  # quando faltar 30 - ENDING jogadas entende-se que o jogo esta acabando
   ENDING = 21
   # BEGINNING = 10
 
@@ -36,7 +36,7 @@ class level2Player:
       print str(len(self.possible_moves))
       return self.random.choice(self.possible_moves)
 
-  # Retonra o movimento que mais faz crescer os pontos
+  # Retorna o movimento que mais faz crescer os pontos
   def getMaxPoint(self,board,moves):
     MAXscore = 0
     idx = 0
@@ -59,7 +59,7 @@ class level2Player:
 
     self.possible_moves += retMove
   
-  # Retonra o movimento que menis faz crescer os pontos
+  # Retorna o movimento que menos faz crescer os pontos
   def getMinPoint(self,board,moves):
     MINscore = 65
     idx = 0
@@ -95,7 +95,7 @@ class level2Player:
         if Move(corner[0],corner[1]) in oponente_moves:
           self.moves_to_ignore += [move]
   
-  # Pega o movimento da malhor quinta caso exista mais que uma (nao sei se pode existir mais de 1)
+  # Pega o movimento da melhor quina caso exista mais que uma 
   def getCorner(self,moves):
     corners = [[1,1],[1,8], [8,1], [8,8]]
     
